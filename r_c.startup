@@ -1,0 +1,14 @@
+ip address add 172.15.103.254/22 dev eth0 
+ip link set eth0 up 
+ip address add 192.168.1.1/24 dev eth1
+ip link set eth1 up 
+ip route add default via 192.168.1.2
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+echo "nameserver 8.8.8.8" > etc/resolv.conf
+apt update
+apt search isc-dhcp-server
+apt install isc-dhcp-server -y
+cp shared/isc-dhcp-server /etc/default/isc-dhcp-server
+cp shared/dhcpd.conf /etc/dhcp/dhcpd.conf
+service isc-dhcp-server start
+
